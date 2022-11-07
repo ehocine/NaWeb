@@ -30,6 +30,8 @@ import com.helic.naweb.components.NoInternetScreen
 import com.helic.naweb.core.ConnectivityObserver
 import com.helic.naweb.viewmodels.MainViewModel
 
+//TODO: Add configs From JSON File
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun WebPage(mainViewModel: MainViewModel) {
