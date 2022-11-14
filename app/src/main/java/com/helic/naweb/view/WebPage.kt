@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,8 +29,6 @@ import com.helic.naweb.components.NoInternetScreen
 import com.helic.naweb.core.ConnectivityObserver
 import com.helic.naweb.viewmodels.MainViewModel
 
-//TODO: Add configs From JSON File
-
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun WebPage(mainViewModel: MainViewModel) {
@@ -41,6 +38,7 @@ fun WebPage(mainViewModel: MainViewModel) {
     var launchedRefresh by remember { mutableStateOf(false) }
     val navigator = rememberWebViewNavigator()
     var firstLoading by remember { mutableStateOf(true) }
+    val url by remember { mainViewModel.url }
     val webClient = remember {
         object : AccompanistWebViewClient() {
             override fun onPageStarted(
@@ -55,8 +53,9 @@ fun WebPage(mainViewModel: MainViewModel) {
     }
 
     val webViewState = rememberWebViewState(
-        url = "https://codecanyon.net/category/mobile/android"
+        url = url
     )
+    Log.d("Url", "Url: $url")
 
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing),
@@ -87,7 +86,7 @@ fun WebPage(mainViewModel: MainViewModel) {
                         when {
                             webViewState.isLoading -> {
                                 CircularProgressIndicator(
-                                    color = MaterialTheme.colors.primary
+                                    color = mainViewModel.spinnerColor.value
                                 )
                                 if (!firstLoading && launchedRefresh) {
                                     LaunchedEffect(key1 = Unit) {
