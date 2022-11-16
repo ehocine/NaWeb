@@ -1,5 +1,15 @@
 {
   "url": "https://codecanyon.net/category/mobile/android",
   "spinnerColor": "#000000",
-  "systemUIColor": "#A2B2C5"
+  "systemUIColor": "#000000",
+  "showInterstitialAds": true,
+  "admobInterstitialID": "ca-app-pub-3940256099942544/1033173712",
+  "showBannerAds": true,
+  "admobBannerID": "ca-app-pub-3940256099942544/6300978111",
+  "showTopAppBar": true,
+  "topAppBarTitle": "App",
+  "topAppColor": "#000000",
+  "topAppBarTitleColor": "#FFFFFF",
+  "refreshIcon": true,
+  "refreshIconColor": "#FFFFFF"
 }

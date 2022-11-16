@@ -12,8 +12,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.helic.naweb.navigation.AppScreens
+import com.helic.naweb.utils.loadInterstitial
 import com.helic.naweb.viewmodels.MainViewModel
 import kotlinx.coroutines.delay
 
@@ -22,6 +24,7 @@ fun SplashScreen(
     navController: NavController,
     mainViewModel: MainViewModel
 ) {
+    val context = LocalContext.current
     var startAnimation by remember { mutableStateOf(false) }
     val alphaAnim = animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
@@ -30,9 +33,8 @@ fun SplashScreen(
     LaunchedEffect(key1 = true) {
         startAnimation = true
         delay(3000L)
-
-        //TODO: Later, navigate to the web page screen when the configs are loaded successfully form  the JSON file.
         if (mainViewModel.getConfigs()) {
+            loadInterstitial(context, mainViewModel.admobInterstitialID.value)
             navController.navigate(AppScreens.WebPage.route) {
                 launchSingleTop = true
             }

@@ -36,6 +36,5 @@ class MainActivity : ComponentActivity() {
                 NavGraph(navController = navController, mainViewModel = mainViewModel)
             }
         }
-        loadInterstitial(this)
     }
 }

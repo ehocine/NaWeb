@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -24,15 +27,16 @@ import com.google.accompanist.web.rememberWebViewState
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.helic.naweb.R
 import com.helic.naweb.components.NoInternetScreen
 import com.helic.naweb.core.ConnectivityObserver
+import com.helic.naweb.utils.showInterstitial
 import com.helic.naweb.viewmodels.MainViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun WebPage(mainViewModel: MainViewModel) {
 
+    val context = LocalContext.current
     val hasInternetCnx by mainViewModel.networkConnectivity.collectAsState(initial = ConnectivityObserver.Status.Unavailable)
     val isRefreshing by mainViewModel.isRefreshing.collectAsState()
     var launchedRefresh by remember { mutableStateOf(false) }
@@ -55,7 +59,6 @@ fun WebPage(mainViewModel: MainViewModel) {
     val webViewState = rememberWebViewState(
         url = url
     )
-    Log.d("Url", "Url: $url")
 
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing),
@@ -64,7 +67,35 @@ fun WebPage(mainViewModel: MainViewModel) {
             navigator.reload()
         })
     {
-        Scaffold {
+        Scaffold(
+            topBar = {
+                if (mainViewModel.showTopAppBar.value) {
+                    TopAppBar(
+                        title = { Text(mainViewModel.topAppBarTitle.value) },
+                        actions = {
+                            if (mainViewModel.refreshIcon.value) {
+                                IconButton(onClick = {
+                                    navigator.reload()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Refresh,
+                                        tint = mainViewModel.refreshIconColor.value,
+                                        contentDescription = ""
+                                    )
+                                }
+                            }
+                        },
+                        backgroundColor = mainViewModel.topAppColor.value,
+                        contentColor = mainViewModel.topAppBarTitleColor.value,
+                        elevation = 0.dp
+                    )
+                }
+            }
+
+        ) {
+            if (mainViewModel.showInterstitialAds.value) {
+                showInterstitial(context)
+            }
             Box(
                 Modifier
                     .fillMaxSize()
@@ -111,18 +142,19 @@ fun WebPage(mainViewModel: MainViewModel) {
                     }
                     else -> Unit
                 }
-                AndroidView(
-                    modifier = Modifier.align(Alignment.BottomCenter),
-                    factory = { context ->
-                        AdView(context).apply {
-                            setAdSize(AdSize.BANNER)
-                            adUnitId = context.getString(R.string.ad_id_banner)
-                            loadAd(AdRequest.Builder().build())
+                if (mainViewModel.showBannerAds.value) {
+                    AndroidView(
+                        modifier = Modifier.align(Alignment.BottomCenter),
+                        factory = { context ->
+                            AdView(context).apply {
+                                setAdSize(AdSize.BANNER)
+                                adUnitId = mainViewModel.admobBannerID.value
+                                loadAd(AdRequest.Builder().build())
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }
-
 }

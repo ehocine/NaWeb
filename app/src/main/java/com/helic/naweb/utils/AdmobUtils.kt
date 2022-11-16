@@ -8,16 +8,15 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.helic.naweb.R
 
 
 var mInterstitialAd: InterstitialAd? = null
 
 //load the interstitial ad
-fun loadInterstitial(context: Context) {
+fun loadInterstitial(context: Context, admobInterstitialID: String) {
     InterstitialAd.load(
         context,
-        context.getString(R.string.ad_id_interstitial),
+        admobInterstitialID,
         AdRequest.Builder().build(),
         object : InterstitialAdLoadCallback() {
             override fun onAdLoaded(interstitialAd: InterstitialAd) {
