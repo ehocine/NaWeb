@@ -42,6 +42,7 @@ fun WebPage(mainViewModel: MainViewModel) {
     var launchedRefresh by remember { mutableStateOf(false) }
     val navigator = rememberWebViewNavigator()
     var firstLoading by remember { mutableStateOf(true) }
+    var loadingWebsite by remember { mutableStateOf(true) }
     val url by remember { mainViewModel.url }
     val webClient = remember {
         object : AccompanistWebViewClient() {
@@ -60,11 +61,21 @@ fun WebPage(mainViewModel: MainViewModel) {
         url = url
     )
 
+    loadingWebsite = when {
+        webViewState.isLoading -> {
+            true
+        }
+        else -> {
+            false
+        }
+    }
+
     SwipeRefresh(
         state = rememberSwipeRefreshState(isRefreshing),
         onRefresh = {
             launchedRefresh = true
             navigator.reload()
+            loadingWebsite = true
         })
     {
         Scaffold(
@@ -76,6 +87,7 @@ fun WebPage(mainViewModel: MainViewModel) {
                             if (mainViewModel.refreshIcon.value) {
                                 IconButton(onClick = {
                                     navigator.reload()
+                                    loadingWebsite = true
                                 }) {
                                     Icon(
                                         imageVector = Icons.Default.Refresh,
@@ -114,8 +126,8 @@ fun WebPage(mainViewModel: MainViewModel) {
                             },
                             client = webClient
                         )
-                        when {
-                            webViewState.isLoading -> {
+                        when (loadingWebsite) {
+                            true -> {
                                 CircularProgressIndicator(
                                     color = mainViewModel.spinnerColor.value
                                 )
@@ -125,7 +137,7 @@ fun WebPage(mainViewModel: MainViewModel) {
                                     }
                                 }
                             }
-                            !webViewState.isLoading -> {
+                            false -> {
                                 launchedRefresh = false
                                 firstLoading = false
                                 LaunchedEffect(key1 = Unit) {

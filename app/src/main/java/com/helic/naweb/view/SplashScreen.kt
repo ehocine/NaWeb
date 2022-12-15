@@ -34,7 +34,9 @@ fun SplashScreen(
         startAnimation = true
         delay(3000L)
         if (mainViewModel.getConfigs()) {
-            loadInterstitial(context, mainViewModel.admobInterstitialID.value)
+            if (mainViewModel.showInterstitialAds.value) {
+                loadInterstitial(context, mainViewModel.admobInterstitialID.value)
+            }
             navController.navigate(AppScreens.WebPage.route) {
                 launchSingleTop = true
             }
