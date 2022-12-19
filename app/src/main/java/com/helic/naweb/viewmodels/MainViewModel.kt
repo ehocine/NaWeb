@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(
     val showTopAppBar: MutableState<Boolean> = mutableStateOf(true)
     val topAppBarTitle: MutableState<String> = mutableStateOf("")
     val topAppBarTitleColor: MutableState<Color> = mutableStateOf(Color.White)
-    val spinnerColor: MutableState<Color> = mutableStateOf(Color.White)
+    val spinnerColor: MutableState<Color> = mutableStateOf(Color.Black)
     val topAppColor: MutableState<Color> = mutableStateOf(Color.White)
     val systemUIColor: MutableState<Color> = mutableStateOf(Color.White)
     val showBannerAds: MutableState<Boolean> = mutableStateOf(true)
